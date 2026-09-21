@@ -1,12 +1,34 @@
 {
   "name": "mini-app",
-  "module": "index.ts",
+  "module": "src/http.ts",
   "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
+  "scripts": {
+    "dev": "bun --watch src/http.ts",
+    "worker": "bun --watch src/worker.ts",
+    "cron": "bun --watch src/cron.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev"
   },
-  "peerDependencies": {
-    "typescript": "^5"
+  "dependencies": {
+    "@prisma/client": "6.19.0",
+    "argon2": "^0.41.1",
+    "express": "^5.2.1",
+    "jose": "^6.0.11",
+    "rabbitmq-client": "^5.0.8",
+    "redis": "^6.2.1",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "@types/express": "^5.0.6",
+    "@types/supertest": "^7.2.1",
+    "@types/swagger-ui-express": "^4.1.8",
+    "prisma": "6.19.0",
+    "supertest": "^7.2.2",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
   }
 }
