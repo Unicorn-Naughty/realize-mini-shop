@@ -7,8 +7,13 @@ import { usersRouter } from "./users/routes";
 import { UserRepo } from "./users/repo";
 import { UserService } from "./users/service";
 import { errorMiddleware } from "./middlewares";
+import { CatalogRepo } from "./catalog/repo";
+import { CatalogService } from "./catalog/service";
+import { catalogRouter } from "./catalog/routes";
+import { redis } from "./shared";
 
-export const createApp =  (): Express=>{
+
+export const createApp =  async (): Promise<Express>=>{
 
 const specPath = path.join(import.meta.dir, "swagger.yaml")
 const file = fs.readFileSync(specPath, 'utf-8')
@@ -16,10 +21,14 @@ const parsed = YAML.parse(file)
 
 const app = express()
 
+  if (!redis.isOpen) {
+    await redis.connect();
+  }
 
 const userRepo = new UserRepo()
+const catalogRepo = new CatalogRepo()
 const userService = new UserService(userRepo)
-
+const catalogService = new CatalogService(catalogRepo, redis)
 
 
 
@@ -38,6 +47,8 @@ app.get("/health", (_req, res)=>{
 })
 
   app.use("/auth", usersRouter(userService))
+
+  app.use("/catalog", catalogRouter(catalogService, redis))
 
   app.use("/", swaggerUi.serve, swaggerUi.setup(parsed))
 

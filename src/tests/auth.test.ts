@@ -4,7 +4,7 @@ import request from "supertest"
 
 describe("auth", () => {
   test("register returns 201 without password hash", async () => {
-    const app = createApp()
+    const app = await createApp()
     const email = `test-${Date.now()}@ex.com`
 
     const res = await request(app)
@@ -18,7 +18,7 @@ describe("auth", () => {
   })
 
   test("same email address returns 409", async () => {
-    const app = createApp()
+    const app = await createApp()
     const email = `test-${Date.now()}@ex.com`
 
     const res = await request(app)
@@ -35,7 +35,7 @@ describe("auth", () => {
   })
 
   test("login returns 200 and access token", async () => {
-    const app = createApp()
+    const app = await createApp()
     const email = `test-${Date.now()}@ex.com`
     const password = "secret12"
 
@@ -54,7 +54,7 @@ describe("auth", () => {
   })
 
   test("login with wrong password returns 401", async () => {
-    const app = createApp()
+    const app = await createApp()
     const email = `test-${Date.now()}@ex.com`
 
     await request(app)
@@ -70,7 +70,7 @@ describe("auth", () => {
   })
 
   test("GET /auth/me without token returns 401", async () => {
-    const app = createApp()
+    const app = await createApp()
 
     const res = await request(app).get("/auth/me")
 
@@ -79,7 +79,7 @@ describe("auth", () => {
   })
 
   test("GET /auth/me with token returns user without password", async () => {
-    const app = createApp()
+    const app = await createApp()
     const email = `test-${Date.now()}@ex.com`
 
     const registered = await request(app)

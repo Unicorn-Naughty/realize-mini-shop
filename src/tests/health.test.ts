@@ -3,7 +3,7 @@ import { createApp } from "../app";
 import request from "supertest"
 
 test("GET /health returns 200 and {ok: true}", async()=>{
-  const app = createApp()
+  const app = await createApp()
   const res = await request(app).get("/health")
 
   expect(res.status).toBe(200)

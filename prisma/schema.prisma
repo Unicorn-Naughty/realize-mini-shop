@@ -13,3 +13,12 @@ model User {
   password String
   created_at DateTime @default(now())
 }
+
+model Catalog {
+  id String @id @default(uuid())
+  name String @unique
+  stock Int
+  price Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
