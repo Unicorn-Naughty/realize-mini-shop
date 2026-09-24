@@ -50,20 +50,19 @@
 
 ## Каркас
 
-
 Чат поддержки в этот каркас не кладётся. Отдельный сервис, отдельный процесс. Магазин отдаёт ему только `order_id` и факт владения.
 
 ## Стек позвоночника
 
-| Что берёшь | Зачем в этом проекте | Куда кладёшь |
-|---|---|---|
-| Postgres | Заказ + склад атомарно | `shared/db`, вызывают repo |
-| Express + TypeScript | HTTP-вход | `app.ts`, `*.routes.ts` |
-| Redis | Идемпотентность оформления, кэш витрины | `shared/redis`, зовут catalog/orders service |
-| RabbitMQ | Работа после ответа клиенту | `shared/rabbit`, пишет service, читает `worker.ts` |
-| Cron | Добить зависшие `pending` | `cron.ts` → `orders.service` |
-| Swagger | Контракт API | рядом с routes |
-| Vitest | Шаги 3–8 проверяются тестом | `tests/` |
+| Что берёшь           | Зачем в этом проекте                    | Куда кладёшь                                       |
+| -------------------- | --------------------------------------- | -------------------------------------------------- |
+| Postgres             | Заказ + склад атомарно                  | `shared/db`, вызывают repo                         |
+| Express + TypeScript | HTTP-вход                               | `app.ts`, `*.routes.ts`                            |
+| Redis                | Идемпотентность оформления, кэш витрины | `shared/redis`, зовут catalog/orders service       |
+| RabbitMQ             | Работа после ответа клиенту             | `shared/rabbit`, пишет service, читает `worker.ts` |
+| Cron                 | Добить зависшие `pending`               | `cron.ts` → `orders.service`                       |
+| Swagger              | Контракт API                            | рядом с routes                                     |
+| Vitest               | Шаги 3–8 проверяются тестом             | `tests/`                                           |
 
 ## Позвоночник, по шагам
 
@@ -220,33 +219,32 @@ Rabbit остаётся очередью задач, воркер заказа. 
 - Не подключать ClickHouse, пока Kafka не умеет отдать событие новому потребителю.
 - Не резать монолит, пока нет разных релизов, разного скейла или мешающейся команды.
 
-
 shop/
-  package.json
-  docker-compose.yml          postgres, redis, rabbit
-  src/
-    app.ts                    собрал Express, порт не слушает
-    http.ts                   entry: listen
-    worker.ts                 entry: Rabbit
-    cron.ts                   entry: расписание
-    users/
-      routes.ts
-      service.ts
-      repo.ts
-    catalog/
-      routes.ts
-      service.ts
-      repo.ts
-    orders/
-      routes.ts
-      service.ts              транзакция «заказ + склад» живёт здесь
-      repo.ts
-    shared/
-      config.ts
-      db.ts
-      redis.ts
-      rabbit.ts
-      log.ts
-      auth.ts                 middleware: кто ты. Не фича.
-  public/                     страница заказа позже, под SSE
-  tests/
+package.json
+docker-compose.yml postgres, redis, rabbit
+src/
+app.ts собрал Express, порт не слушает
+http.ts entry: listen
+worker.ts entry: Rabbit
+cron.ts entry: расписание
+users/
+routes.ts
+service.ts
+repo.ts
+catalog/
+routes.ts
+service.ts
+repo.ts
+orders/
+routes.ts
+service.ts транзакция «заказ + склад» живёт здесь
+repo.ts
+shared/
+config.ts
+db.ts
+redis.ts
+rabbit.ts
+log.ts
+auth.ts middleware: кто ты. Не фича.
+public/ страница заказа позже, под SSE
+tests/
